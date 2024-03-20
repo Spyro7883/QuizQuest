@@ -1,22 +1,7 @@
 "use client"
-import Image from 'next/image'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function Home() {
-  const [state, setState] = useState(0)
-  let correctAnswers = 0;
-  const changeState = (appStatus: number) => {
-    setState(appStatus)
-  }
-  const tickTimer = () => {
-    setTimeout("10s");
-  }
-
-  const pickAnswer = (answer: true) => {
-    answer === true ? correctAnswers++ : <></>;
-  }
-  // console.log(renderedArray)
-
   const questionsArray = [
     {
       title: 'First Question',
@@ -25,10 +10,46 @@ export default function Home() {
     },
     {
       title: 'Second Option',
-      options: ['A. First option', 'B. Second option', 'C. Third option'],
+      options: ['A. First optionV2', 'B. Second optionV2', 'C. Third optionV2'],
       rAnswer: "B"
     },
+
   ];
+  const [state, setState] = useState(0)
+  const [shownQuestion, setShownQuestion] = useState(questionsArray[0]);
+  let [questionNumber, setQuestionNumber] = useState(0);
+  let correctAnswers = 0;
+  const changeState = (appStatus: number) => {
+    setState(appStatus)
+  }
+  const pickAnswer = (answer: true) => {
+    answer === true ? correctAnswers++ : <></>;
+  }
+
+
+
+  const testTimeout = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setTimeout(() => {
+      console.log("Delayed for 1 second");
+      console.log(questionsArray[questionNumber])
+      console.log(`QuestionNumber is ${questionNumber}`)
+    }, 1000)
+  }
+
+  const renderArray = (event: React.MouseEvent<HTMLButtonElement>) => {
+    // setTimeout(() => {
+    questionNumber + 1 === questionsArray.length ?
+      (() => { changeState(2); setQuestionNumber(0), setShownQuestion(questionsArray[questionNumber]) }) : <></>
+    if (shownQuestion !== questionsArray[questionNumber + 1]) {
+      setShownQuestion(questionsArray[questionNumber + 1])
+      setQuestionNumber(questionNumber + 1);
+    }
+    // }, 1000)
+
+  }
+  useEffect(() => {
+
+  }, [shownQuestion])
 
   return (
     <div>
@@ -46,18 +67,16 @@ export default function Home() {
             }
             <div>
               {state === 1 ?
-                questionsArray.map((question, questionIndex: number) =>
-                  <div key={questionIndex}><p>{question.title}</p>
-                    <div>Timer: {"s"}</div>
-                    <div>
-                      {question.options.map((possibleAnswer, optionIndex: number) => {
-                        return <button key={optionIndex} onClick={() => questionIndex + 1 === questionsArray.length && changeState(2)}>{possibleAnswer}</button>
-                      }
-                      )}
-                    </div>
-
+                <div ><p>{shownQuestion.title}</p>
+                  <div>Timer: {"s"}</div>
+                  <div>
+                    {shownQuestion.options.map((possibleAnswer: any, optionIndex: number) => {
+                      return <button key={optionIndex} onClick={renderArray}>{possibleAnswer}</button>
+                    }
+                    )}
                   </div>
-                )
+                  <button onClick={testTimeout}>Try me</button>
+                </div>
                 : null}
 
             </div>
