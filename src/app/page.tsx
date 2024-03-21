@@ -17,39 +17,35 @@ export default function Home() {
   ];
   const [state, setState] = useState(0)
   const [shownQuestion, setShownQuestion] = useState(questionsArray[0]);
+  const [timeLeft, setTimeLeft] = useState(5);
   let [questionNumber, setQuestionNumber] = useState(0);
-  let correctAnswers = 0;
+  let [correctAnswers, setCorretAnswers] = useState(0);
+
   const changeState = (appStatus: number) => {
     setState(appStatus)
   }
-  const pickAnswer = (answer: true) => {
-    answer === true ? correctAnswers++ : <></>;
+  const checkAnswer = (optionIndex: number) => {
+    // console.log(shownQuestion.options[optionIndex])
+    shownQuestion.options[optionIndex].charAt(0) === shownQuestion.rAnswer ? setCorretAnswers(correctAnswers++) : console.log("wrong answer");
   }
 
-
-
-  const testTimeout = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setTimeout(() => {
-      console.log("Delayed for 1 second");
-      console.log(questionsArray[questionNumber])
-      console.log(`QuestionNumber is ${questionNumber}`)
-    }, 1000)
-  }
-
-  const renderArray = (event: React.MouseEvent<HTMLButtonElement>) => {
-    // setTimeout(() => {
-    questionNumber + 1 === questionsArray.length ?
-      (() => { changeState(2); setQuestionNumber(0), setShownQuestion(questionsArray[questionNumber]) }) : <></>
-    if (shownQuestion !== questionsArray[questionNumber + 1]) {
-      setShownQuestion(questionsArray[questionNumber + 1])
-      setQuestionNumber(questionNumber + 1);
-    }
-    // }, 1000)
-
-  }
   useEffect(() => {
+    if (timeLeft > 0) {
+      const timerId = setTimeout(() => {
+        setTimeLeft(timeLeft - 1);
+      }, 1000);
 
-  }, [shownQuestion])
+      return () => clearTimeout(timerId);
+    } else {
+      if (shownQuestion !== questionsArray[questionNumber + 1] && questionNumber + 1 !== questionsArray.length) {
+        setShownQuestion(questionsArray[questionNumber + 1])
+        setQuestionNumber(questionNumber + 1);
+        setTimeLeft(5)
+      }
+      else { changeState(2); setShownQuestion(questionsArray[0]), setQuestionNumber(0), console.log('Countdown finished!'); console.log(correctAnswers) }
+
+    }
+  }, [timeLeft]);
 
   return (
     <div>
@@ -63,19 +59,18 @@ export default function Home() {
         <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
           <section>
             {state === 0 ?
-              <button onClick={() => changeState(1)}>Start game</button> : <></>
+              <button onClick={() => { changeState(1), setTimeLeft(5) }}>Start game</button> : <></>
             }
             <div>
               {state === 1 ?
                 <div ><p>{shownQuestion.title}</p>
-                  <div>Timer: {"s"}</div>
                   <div>
+                    <p>Time left {timeLeft}</p>
                     {shownQuestion.options.map((possibleAnswer: any, optionIndex: number) => {
-                      return <button key={optionIndex} onClick={renderArray}>{possibleAnswer}</button>
+                      return <button key={optionIndex} onClick={() => checkAnswer(optionIndex)}>{possibleAnswer}</button>
                     }
                     )}
                   </div>
-                  <button onClick={testTimeout}>Try me</button>
                 </div>
                 : null}
 
