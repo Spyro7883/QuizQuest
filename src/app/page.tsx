@@ -1,32 +1,29 @@
 "use client"
 import { useState, useEffect } from "react"
+import { questionsArray } from "./utils";
 
 export default function Home() {
-  const questionsArray = [
-    {
-      title: 'First Question',
-      options: ['A. First option', 'B. Second option', 'C. Third option'],
-      rAnswer: "A"
-    },
-    {
-      title: 'Second Option',
-      options: ['A. First optionV2', 'B. Second optionV2', 'C. Third optionV2'],
-      rAnswer: "B"
-    },
-
-  ];
   const [state, setState] = useState(0)
   const [shownQuestion, setShownQuestion] = useState(questionsArray[0]);
   const [timeLeft, setTimeLeft] = useState(5);
   let [questionNumber, setQuestionNumber] = useState(0);
-  let [correctAnswers, setCorretAnswers] = useState(0);
+  let [correctAnswers, setCorrectAnswers] = useState(0);
+  let shuffleArray = [];
 
   const changeState = (appStatus: number) => {
     setState(appStatus)
   }
   const checkAnswer = (optionIndex: number) => {
-    // console.log(shownQuestion.options[optionIndex])
-    shownQuestion.options[optionIndex].charAt(0) === shownQuestion.rAnswer ? setCorretAnswers(correctAnswers++) : console.log("wrong answer");
+    if (shownQuestion.options[optionIndex].charAt(0) === shownQuestion.rAnswer) { setCorrectAnswers(prevCorrectAnswers => prevCorrectAnswers + 1); console.log(`These are the correct answers: ${correctAnswers}`) }
+    else console.log("wrong answer");
+    setTimeLeft(0)
+  }
+
+  const shuffleQuestions = () => {
+    for (let i = 0; questionsArray.length - i < questionsArray.length; i++) {
+      // console.log("it works");
+      // if (questionsArray.length - 1 < 0) break;
+    }
   }
 
   useEffect(() => {
@@ -59,7 +56,11 @@ export default function Home() {
         <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
           <section>
             {state === 0 ?
-              <button onClick={() => { changeState(1), setTimeLeft(5) }}>Start game</button> : <></>
+              <div>
+                <button onClick={() => { changeState(1), setTimeLeft(5), setCorrectAnswers(0) }}>Start game</button>
+                <button onClick={shuffleQuestions}>Test</button>
+              </div> : <></>
+
             }
             <div>
               {state === 1 ?
@@ -67,7 +68,7 @@ export default function Home() {
                   <div>
                     <p>Time left {timeLeft}</p>
                     {shownQuestion.options.map((possibleAnswer: any, optionIndex: number) => {
-                      return <button key={optionIndex} onClick={() => checkAnswer(optionIndex)}>{possibleAnswer}</button>
+                      return <button key={optionIndex} onClick={() => checkAnswer(optionIndex)}>{possibleAnswer} &nbsp;</button>
                     }
                     )}
                   </div>
