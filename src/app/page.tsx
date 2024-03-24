@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect } from "react"
 import { questionsArray } from "./utils";
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [state, setState] = useState(0)
@@ -8,7 +9,6 @@ export default function Home() {
   const [timeLeft, setTimeLeft] = useState(5);
   let [questionNumber, setQuestionNumber] = useState(0);
   let [correctAnswers, setCorrectAnswers] = useState(0);
-  let shuffleArray = [];
 
   const changeState = (appStatus: number) => {
     setState(appStatus)
@@ -18,13 +18,14 @@ export default function Home() {
     else console.log("wrong answer");
     setTimeLeft(0)
   }
+  const router = useRouter();
 
-  const shuffleQuestions = () => {
-    for (let i = 0; questionsArray.length - i < questionsArray.length; i++) {
-      // console.log("it works");
-      // if (questionsArray.length - 1 < 0) break;
-    }
-  }
+  const gameId = '123';
+
+  const startGame = () => {
+    changeState(1), setTimeLeft(5), setCorrectAnswers(0)
+    // ,router.push(`/game/${gameId}`);
+  };
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -57,8 +58,7 @@ export default function Home() {
           <section>
             {state === 0 ?
               <div>
-                <button onClick={() => { changeState(1), setTimeLeft(5), setCorrectAnswers(0) }}>Start game</button>
-                <button onClick={shuffleQuestions}>Test</button>
+                <button onClick={startGame}>Start game</button>
               </div> : <></>
 
             }

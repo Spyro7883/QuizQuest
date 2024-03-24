@@ -1,20 +1,20 @@
+require("dotenv").config()
 const express = require("express");
-const next = require("next");
+const http = require("http");
+const { Server } = require("socket.io");
+const { v4: uuidv4 } = require("uuid")
 
-const port = 3001;
-const dev = process.env.NODE_ENV !== "production";
-const app = next({ dev });
-const handle = app.getRequestHandler();
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server)
 
-app.prepare().then(() => {
-  const server = express();
-
-  server.all("*", (req, res) => {
-    return handle(req, res);
+io.on('connection', (socket) => {
+  socket.on('create game', () => {
+    const gameId = uuidv4();
+    socket.emit('game created', gameId);
   });
+});
 
-  server.listen(port, (err) => {
-    if (err) throw err;
-    console.log(`> Ready on http://localhost:${port}`);
-  });
+server.listen(3001, () => {
+  console.log(`Server listening on http://localhost:3001`);
 });
