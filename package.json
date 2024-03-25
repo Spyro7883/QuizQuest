@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build && node server/index.js",
+    "dev": "next dev && node api/index.js",
+    "build": "next build && node api/index.js",
     "start": "next start",
     "lint": "next lint",
-    "server:dev": "nodemon server/index.js"
+    "server:dev": "node api/index.js"
   },
   "dependencies": {
     "@types/react": "18.2.67",
