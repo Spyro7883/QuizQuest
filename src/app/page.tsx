@@ -45,7 +45,7 @@ export default function Home() {
   }, [timeLeft]);
 
   useEffect(() => {
-    const newSocket = io(`http://localhost:${process.env.NEXT_PUBLIC_PORT}`);
+    const newSocket = io(`http://0.0.0.0:${process.env.NEXT_PUBLIC_PORT}`);
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
