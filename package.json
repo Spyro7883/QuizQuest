@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "dev:server": "nodemon server/index.js"
+    "server:dev": "nodemon server/index.js"
   },
   "dependencies": {
     "@types/react": "18.2.67",
